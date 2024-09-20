@@ -17,7 +17,7 @@ ORDER BY avg_loan_amount DESC;
 
 
 --2 This query identifies patterns where loans with higher interest rate spreads are more likely to default. 
---This query helps spot risky loans that are more likely to default based on high-interest rate spreads. You can use this insight to re-evaluate loan pricing models.
+--This query helps spot risky loans that are more likely to default based on high-interest rate spreads. This can be used to re-evaluate loan pricing models.
  
  WITH default_risk AS (
     SELECT al.id, al.loan_amount, al.Interest_rate_spread, ld.loan_type, ld.Credit_Worthiness
@@ -119,7 +119,7 @@ GROUP BY loan_type
 ORDER BY loan_type;
 
 --7 Explore whether longer loan terms have resulted in significantly higher or lower interest rates over the years, showing the evolution of risk perception.
--- This query groups loans into different tenure buckets and tracks the average interest rate for each group over the years, allowing you to see how loan tenure correlates with interest rates and if lenders are offering different rates based on loan durations over time.
+-- This query groups loans into different tenure buckets and tracks the average interest rate for each group over the years, allowing to see how loan tenure correlates with interest rates and if lenders are offering different rates based on loan durations over time.
 
 WITH loan_trends AS (
     SELECT 
