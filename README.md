@@ -47,25 +47,7 @@ ORDER BY pre_approval_rate DESC;
 
 
 
---4 This query calculates loan approval rates by combining creditworthiness and region. It also highlights regions with higher rejection rates.
---This query helps identify regions and creditworthiness segments with high default rates. It provides insights into how geographic and credit factors influence approval outcomes, guiding region-specific lending strategies.
-
-SELECT ld.Region, lo.Credit_Worthiness, 
-       COUNT(ld.id) AS total_applications, 
-       SUM(CASE WHEN lo.id IS NOT NULL THEN 1 ELSE 0 END) AS defaults,
-       ROUND((SUM(CASE WHEN lo.id IS NOT NULL THEN 1 ELSE 0 END) * 100.0 / COUNT(ld.id)), 2) AS default_rate,
-       AVG(al.loan_amount) AS avg_loan_amount
-FROM loan_details ld
-JOIN loan_default lo ON ld.id = lo.id
-JOIN amount_of_loan al ON lo.id = al.id
-GROUP BY ld.Region, lo.Credit_Worthiness
-HAVING COUNT(ld.id) > 10 -- Filter out small sample sizes
-ORDER BY default_rate DESC;
-
-
-
-
---5 Analyze whether lower credit scores lead to longer loan terms and higher default rates.
+--4 Analyze whether lower credit scores lead to longer loan terms and higher default rates.
 --This will show if lower credit scores tend to have longer loan terms, which in turn might lead to higher default risks.
 
 WITH low_credit_loans AS (
@@ -98,7 +80,7 @@ ORDER BY
 
 
 
---6 This query calculates the average cumulative default rate for each loan type, showing how default risks accumulate over time. Higher rates for certain loan types may indicate greater risk and inform targeted risk management strategies.
+--5 This query calculates the average cumulative default rate for each loan type, showing how default risks accumulate over time. Higher rates for certain loan types may indicate greater risk and inform targeted risk management strategies.
 
 WITH loan_defaults_cte AS (
     SELECT ld.id, ld.loan_type, ld.Credit_Worthiness, ld.year, 
@@ -118,7 +100,7 @@ FROM cumulative_defaults
 GROUP BY loan_type
 ORDER BY loan_type;
 
---7 Explore whether longer loan terms have resulted in significantly higher or lower interest rates over the years, showing the evolution of risk perception.
+--6 Explore whether longer loan terms have resulted in significantly higher or lower interest rates over the years, showing the evolution of risk perception.
 -- This query groups loans into different tenure buckets and tracks the average interest rate for each group over the years, allowing to see how loan tenure correlates with interest rates and if lenders are offering different rates based on loan durations over time.
 
 WITH loan_trends AS (
@@ -142,7 +124,7 @@ GROUP BY lt.year, lt.loan_term_bucket
 ORDER BY lt.year, lt.loan_term_bucket;
 
 
---8 Explore whether loans that were approved in advance have better terms (interest rates, loan amounts) and whether they have a lower default rate.
+--7 Explore whether loans that were approved in advance have better terms (interest rates, loan amounts) and whether they have a lower default rate.
 --This query gives a comprehensive view of whether loans that were approved in advance result in better loan terms and lower default rates, highlighting the potential benefits of pre-approved applications.
 
 WITH approval_impact AS (
@@ -168,7 +150,7 @@ GROUP BY approv_in_adv
 ORDER BY avg_loan_amount DESC;
 
 
---9 Determine whether certain loan types  lead to significantly higher LTV ratios compared to others and how LTV changes across property values.
+--8 Determine whether certain loan types  lead to significantly higher LTV ratios compared to others and how LTV changes across property values.
 --This query gives an understanding of whether higher property values lead to lower or higher LTV ratios across different loan types, which may indicate the relative risk tolerance of lenders for particular loan products.
 
 WITH ltv_analysis AS (
@@ -197,7 +179,7 @@ GROUP BY loan_type, property_value_category
 ORDER BY loan_type, property_value_category;
 
 
---10 Compare the interest rates and terms between business/commercial loans and personal loans.
+--9 Compare the interest rates and terms between business/commercial loans and personal loans.
 --This query helps you understand if business or commercial loans have significantly different terms compared to personal loans, providing useful information for product development or risk analysis.
 
 SELECT 
@@ -211,7 +193,7 @@ GROUP BY ld.business_or_commercial
 ORDER BY ld.business_or_commercial;
 
 
---11 Top 4 Ages with the Highest Average Loan Amounts
+--10 Top 4 Ages with the Highest Average Loan Amounts
 
 SELECT 
     age,
